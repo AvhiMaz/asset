@@ -22,7 +22,7 @@ pub struct Vault {
     pub asset_amount: u64,
     #[max_len(50)]
     pub asset_reference: String,
-    pub vault_usdc_amount: Pubkey,
+    pub vault_usdc_account: Pubkey,
     pub is_claimed: bool,
     pub bump: u8,
 }
