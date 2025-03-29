@@ -39,18 +39,19 @@ impl<'info> Transfer<'info> {
             AssetType::Sol => {
                 let ix = anchor_lang::solana_program::system_instruction::transfer(
                     &self.creator.key(),
-                    &self.vault.key(),
+                    &vault.to_account_info().key(),
                     amount,
                 );
                 anchor_lang::solana_program::program::invoke(
                     &ix,
                     &[
                         self.creator.to_account_info(),
-                        self.vault.to_account_info(),
+                        vault.to_account_info(),
                         self.system_program.to_account_info(),
                     ],
                 )?;
             }
+
             AssetType::Usdc => {
                 let cpi_accounts = anchor_spl::token::Transfer {
                     from: self.user_token_account.to_account_info(),
@@ -65,6 +66,9 @@ impl<'info> Transfer<'info> {
                 return Err(VaultError::InvalidAssetType.into());
             }
         }
+
+        vault.asset_amount += amount;
+        msg!("Successfully ransferred {} to vault", amount);
 
         Ok(())
     }
