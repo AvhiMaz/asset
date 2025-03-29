@@ -5,6 +5,7 @@ pub mod errors;
 pub mod instructions;
 pub mod states;
 
+use instructions::claim::*;
 use instructions::init_vault::*;
 use instructions::transfer::*;
 use states::vault::AssetType;
@@ -31,6 +32,11 @@ pub mod contract {
 
     pub fn transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_to_vault(amount)?;
+        Ok(())
+    }
+
+    pub fn claim(ctx: Context<Claim>) -> Result<()> {
+        ctx.accounts.claim()?;
         Ok(())
     }
 }
