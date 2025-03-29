@@ -6,6 +6,7 @@ pub mod instructions;
 pub mod states;
 
 use instructions::init_vault::*;
+use instructions::transfer::*;
 use states::vault::AssetType;
 
 declare_id!("5Fy9pnLmcQu9vsM6o3Vwc2tzytBxt4MGL5SBGboqyBJ");
@@ -25,6 +26,11 @@ pub mod contract {
         ctx.accounts
             .init(unlock_time, bump, asset_type, asset_reference)?;
 
+        Ok(())
+    }
+
+    pub fn transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
+        ctx.accounts.transfer_to_vault(amount)?;
         Ok(())
     }
 }
