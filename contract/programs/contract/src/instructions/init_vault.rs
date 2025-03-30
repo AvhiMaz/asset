@@ -34,10 +34,12 @@ impl<'info> InitVault<'info> {
         bump: u8,
         asset_type: AssetType,
         asset_reference: String,
+        recipient: Pubkey,
     ) -> Result<()> {
         let vault = &mut self.vault;
 
         vault.creator = self.creator.key();
+        vault.recipient = recipient;
         vault.unlock_time = unlock_time;
         vault.asset_type = asset_type.clone();
         vault.asset_amount = 0;

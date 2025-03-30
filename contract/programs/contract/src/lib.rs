@@ -23,9 +23,10 @@ pub mod contract {
         bump: u8,
         asset_type: AssetType,
         asset_reference: String,
+        recipient: Pubkey,
     ) -> Result<()> {
         ctx.accounts
-            .init(unlock_time, bump, asset_type, asset_reference)?;
+            .init(unlock_time, bump, asset_type, asset_reference, recipient)?;
 
         Ok(())
     }

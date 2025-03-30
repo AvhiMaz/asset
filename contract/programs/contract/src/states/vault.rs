@@ -17,6 +17,7 @@ impl Space for AssetType {
 #[derive(InitSpace)]
 pub struct Vault {
     pub creator: Pubkey,
+    pub recipient: Pubkey,
     pub unlock_time: i64,
     pub asset_type: AssetType,
     pub asset_amount: u64,
