@@ -10,7 +10,7 @@ use instructions::init_vault::*;
 use instructions::transfer::*;
 use states::vault::AssetType;
 
-declare_id!("5Fy9pnLmcQu9vsM6o3Vwc2tzytBxt4MGL5SBGboqyBJ");
+declare_id!("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
 
 #[program]
 pub mod contract {
