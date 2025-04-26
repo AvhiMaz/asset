@@ -73,12 +73,6 @@ impl<'info> DepositToVault<'info> {
         }
 
         vault.asset_amount += amount;
-        msg!("Successfully ransferred {} to vault", amount);
-
-        msg!(
-            "User Token Account Owner: {:?}",
-            self.creator_token_account.owner
-        );
 
         Ok(())
     }
