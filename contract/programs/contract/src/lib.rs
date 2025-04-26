@@ -31,7 +31,7 @@ pub mod contract {
         Ok(())
     }
 
-    pub fn transfer(ctx: Context<Transfer>, amount: u64) -> Result<()> {
+    pub fn transfer(ctx: Context<DepositToVault>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_to_vault(amount)?;
         Ok(())
     }

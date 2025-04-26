@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token::Token};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{Mint, Token, TokenAccount},
+};
 
 use crate::states::{vault::AssetType, Vault};
 
@@ -8,19 +11,26 @@ use crate::states::{vault::AssetType, Vault};
 pub struct InitVault<'info> {
     #[account(mut)]
     pub creator: Signer<'info>,
+    pub usdc_mint: Account<'info, Mint>, 
 
     #[account(
         init,
         payer = creator,
         space = 8 + Vault::INIT_SPACE,
-        seeds = [b"vault", creator.key().as_ref(), unlock_time.to_le_bytes().as_ref()],
+        seeds = [b"vault", creator.key().as_ref(), &unlock_time.to_le_bytes()],
         bump
     )]
     pub vault: Account<'info, Vault>,
 
-    /// CHECK: Only used if `asset_type == Usdc`
-    #[account(mut)]
-    pub vault_usdc_account: UncheckedAccount<'info>,
+    #[account(
+        init_if_needed,
+        payer = creator,
+        associated_token::mint = usdc_mint, 
+        associated_token::authority = vault, 
+    )]
+    pub vault_usdc_account: Account<'info, TokenAccount>,
+    
+    
     pub rent: Sysvar<'info, Rent>,
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,

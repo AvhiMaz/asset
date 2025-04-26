@@ -10,7 +10,6 @@ pub struct Claim<'info> {
 
     #[account(
         mut, 
-        has_one = recipient, 
         constraint = !vault.is_claimed @ VaultError::AlreadyClaimed,
         constraint = vault.unlock_time <= Clock::get()?.unix_timestamp @ VaultError::VaultLocked
     )]
@@ -32,11 +31,12 @@ impl<'info> Claim<'info> {
     pub fn claim(&mut self) -> Result<()> {
         let vault = &mut self.vault;
 
-        let vault_signer_seeds = &[b"vault", vault.creator.as_ref(), &vault.unlock_time.to_le_bytes(), &[vault.bump]];
-        let signer_seeds = &[&vault_signer_seeds[..]];
-
         match vault.asset_type {
             AssetType::Sol => {
+                require!(
+                    vault.to_account_info().owner == &anchor_lang::solana_program::system_program::ID,
+                    VaultError::InvalidOwner
+                );
                 let ix = anchor_lang::solana_program::system_instruction::transfer(
                     &vault.to_account_info().key(),
                     &self.recipient.to_account_info().key(),
@@ -49,19 +49,35 @@ impl<'info> Claim<'info> {
                         self.recipient.to_account_info(),
                         self.system_program.to_account_info(),
                     ],
-                    signer_seeds,
+                    &[&[
+                        b"vault",
+                        vault.creator.as_ref(),
+                        &vault.unlock_time.to_le_bytes(),
+                        &[vault.bump], 
+                    ]],
                 )?;
             }
 
             AssetType::Usdc => {
+
                 let cpi_accounts = Transfer {
                     from: self.vault_token_account.to_account_info(),
                     to: self.recipient_token_account.to_account_info(),
                     authority: vault.to_account_info(),
                 };
-                let cpi_ctx =
-                    CpiContext::new_with_signer(self.token_program.to_account_info(), cpi_accounts, signer_seeds);
+                let signer: &[&[&[u8]]] = &[&[
+                    b"vault",
+                    vault.creator.as_ref(),
+                    &vault.unlock_time.to_le_bytes(),
+                    &[vault.bump],
+                ]];
+                let cpi_ctx = CpiContext::new_with_signer(
+                    self.token_program.to_account_info(),
+                    cpi_accounts,
+                    signer,
+                );
                 anchor_spl::token::transfer(cpi_ctx, vault.asset_amount)?;
+                
             }
 
             _ => return Err(VaultError::InvalidAssetType.into()),

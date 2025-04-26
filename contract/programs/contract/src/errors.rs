@@ -22,4 +22,7 @@ pub enum VaultError {
 
     #[msg("Insufficient funds in the vault.")]
     InsufficientFunds,
+
+    #[msg("Invalid owner of the vault.")]
+    InvalidOwner,
 }

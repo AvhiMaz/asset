@@ -7,16 +7,19 @@ use crate::{
 };
 
 #[derive(Accounts)]
-pub struct Transfer<'info> {
-    #[account(mut)]
+pub struct DepositToVault<'info> {
+    #[account(mut, signer)]
     pub creator: Signer<'info>,
 
     #[account(mut, has_one = creator)]
     pub vault: Account<'info, Vault>,
 
     #[account(mut)]
-    pub user_token_account: Account<'info, TokenAccount>,
-    #[account(mut)]
+    pub creator_token_account: Account<'info, TokenAccount>,
+    #[account(
+        mut,
+        constraint = vault_token_account.owner == vault.key() @ VaultError::InvalidOwner
+    )]
     pub vault_token_account: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
@@ -24,8 +27,10 @@ pub struct Transfer<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> Transfer<'info> {
+impl<'info> DepositToVault<'info> {
     pub fn transfer_to_vault(&mut self, amount: u64) -> Result<()> {
+        msg!("transfer will happen here");
+
         let vault = &mut self.vault;
 
         require!(!vault.is_claimed, VaultError::AlreadyClaimed);
@@ -54,7 +59,7 @@ impl<'info> Transfer<'info> {
 
             AssetType::Usdc => {
                 let cpi_accounts = anchor_spl::token::Transfer {
-                    from: self.user_token_account.to_account_info(),
+                    from: self.creator_token_account.to_account_info(),
                     to: self.vault_token_account.to_account_info(),
                     authority: self.creator.to_account_info(),
                 };
@@ -69,6 +74,11 @@ impl<'info> Transfer<'info> {
 
         vault.asset_amount += amount;
         msg!("Successfully ransferred {} to vault", amount);
+
+        msg!(
+            "User Token Account Owner: {:?}",
+            self.creator_token_account.owner
+        );
 
         Ok(())
     }

@@ -1,6 +1,8 @@
 [toolchain]
 
 [features]
+seeds = true
+log = true
 resolution = true
 skip-lint = false
 
@@ -11,7 +13,7 @@ contract = "5Fy9pnLmcQu9vsM6o3Vwc2tzytBxt4MGL5SBGboqyBJ"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
