@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion } from "framer-motion";
@@ -8,6 +7,14 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 
 export function Background() {
+  const assets = [
+    { src: "/solana.png", alt: "Solana" },
+    { src: "/usdc.png", alt: "USDC" },
+    { src: "/image.png", alt: "Image" },
+    { src: "/text.png", alt: "Text" },
+    { src: "/voice.png", alt: "Voice" },
+  ];
+
   return (
     <AuroraBackground>
       <motion.div
@@ -30,13 +37,24 @@ export function Background() {
           lock a variety of assets, including:
         </div>
 
+      <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
+        {assets.map((asset, index) => (
+        <img
+        key={index}
+        src={asset.src}
+        alt={asset.alt}
+        className="w-12 lg:w-14 lg:h-14 object-contain"
+      />
+      ))}
+
+      </div>
         <div className="flex gap-3 mt-6">
-          <Button className="lowercase">
+          <Button className="lowercase cursor-pointer ">
             Create Vault <ArrowRight className="w-[1px] h-[1px]"/>
           </Button>
-          <Button className="lowercase"> 
+          <div className="lowercase flex items-center justify-center border-2 py-1 px-6 rounded-lg cursor-pointer"> 
             Learn More
-          </Button>
+          </div>
         </div>
 
       </motion.div>
