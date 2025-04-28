@@ -3,10 +3,9 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { AuroraBackground } from "../components/ui/aurora-background";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Wallet } from "lucide-react";
 import { Button } from "./ui/button";
-import { DotPattern } from "./magicui/dot-pattern";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function Background() {
   const assets = [
@@ -19,6 +18,21 @@ export function Background() {
 
   return (
     <AuroraBackground>
+      <nav className="py-4 fixed top-0 md:top-10 lg:top-10 left-0 right-0 lg:left-50 lg:right-50 rounded-lg backdrop-blur-xs z-50 border">
+        <div className="container mx-auto flex items-center justify-between px-4">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="font-medium text-xl tracking-tighter">timeloop vault</Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <div
+              className="border-zinc-300 text-xl font-medium flex items-center tracking-tighter text-center cursor-pointer"
+            >
+              <Wallet className="mr-2 h-5 w-5" /> connect wallet
+            </div>
+          </div>
+        </div>
+      </nav>
+
       <motion.div
         initial={{ opacity: 0.0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -27,9 +41,9 @@ export function Background() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative min-h-screen w-full flex flex-col gap-4 items-center justify-center  lowercase"
+        className="relative min-h-screen w-full flex flex-col gap-4 items-center justify-center lowercase"
       >
-        <div className="text-4xl md:text-6xl dark:text-white text-center lowercase tracking-tighter">
+        <div className="text-4xl md:text-6xl text-center lowercase tracking-tighter">
           Lock asset in time, Deliver to the future
         </div>
         <div className="font-extralight text-md mx-10 lg:text-xl text-center tracking-tighter">
@@ -58,7 +72,6 @@ export function Background() {
             Learn More
           </div>
         </div>
-
       </motion.div>
     </AuroraBackground>
   );

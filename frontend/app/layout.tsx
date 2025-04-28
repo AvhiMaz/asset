@@ -5,9 +5,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Timeloop Vault | Lock Assets in Time",
+  title: "timeloop vault | lock assets in time",
   description:
-    "Lock digital assets on Solana and schedule their delivery to a recipient at a future date.",
+    "lock digital assets on solana and schedule their delivery to a recipient at a future date.",
 };
 
 export default function RootLayout({
