@@ -48,8 +48,8 @@ export function Background() {
         <div className="text-4xl md:text-6xl mx-10 text-center lowercase tracking-tighter">
           Lock asset in time, Deliver to the future
         </div>
-        <div className="font-extralight text-md mx-10 lg:text-xl text-center tracking-tighter">
-          Timeloop Vault lets you lock any digital asset on Solana and schedule its delivery to a recipient at a future date.
+        <div className="font-extralight text-lg mx-10 lg:text-xl text-center tracking-tighter">
+          Timeloop Vault lets you lock any digital asset on Solana and schedule its <br/>delivery to a recipient at a future date.
         </div>
         {/* <div className="font-extralight text-md mx-10 lg:text-xl text-center tracking-tighter"> */}
         {/*   lock a variety of assets, including: */}
