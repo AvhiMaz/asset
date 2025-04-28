@@ -6,7 +6,7 @@ import { AuroraBackground } from "../components/ui/aurora-background";
 import { ArrowRight, Wallet } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { AnimatedGradientTextDemo, Badge } from "./badge";
+import { AnimatedGradientTextDemo } from "./badge";
 
 export function Background() {
   const assets = [
