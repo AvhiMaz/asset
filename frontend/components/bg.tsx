@@ -5,6 +5,8 @@ import React from "react";
 import { AuroraBackground } from "../components/ui/aurora-background";
 import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { DotPattern } from "./magicui/dot-pattern";
+import { cn } from "@/lib/utils";
 
 export function Background() {
   const assets = [
@@ -37,13 +39,13 @@ export function Background() {
           lock a variety of assets, including:
         </div>
 
-      <div className="flex flex-wrap justify-center gap-3 lg:gap-4">
+      <div className="flex flex-wrap justify-center gap-3 lg:gap-4 mt-2">
         {assets.map((asset, index) => (
         <img
         key={index}
         src={asset.src}
         alt={asset.alt}
-        className="w-12 lg:w-14 lg:h-14 object-contain"
+        className="w-12 lg:w-14 lg:h-14 object-contain grayscale transition-all duration-300 ease-in-out hover:grayscale-0" 
       />
       ))}
 
@@ -52,7 +54,7 @@ export function Background() {
           <Button className="lowercase cursor-pointer ">
             Create Vault <ArrowRight className="w-[1px] h-[1px]"/>
           </Button>
-          <div className="lowercase flex items-center justify-center border-2 py-1 px-6 rounded-lg cursor-pointer"> 
+          <div className="lowercase flex items-center justify-center border-2 py-[5px] px-6 rounded-lg cursor-pointer"> 
             Learn More
           </div>
         </div>
