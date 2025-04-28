@@ -24,7 +24,7 @@ export default function AppWalletProvider({
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter()
     ],
-    [],
+    [network],
   );
 
   return (
