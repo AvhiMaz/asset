@@ -6,6 +6,7 @@ import { AuroraBackground } from "../components/ui/aurora-background";
 import { ArrowRight, Wallet } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { AnimatedGradientTextDemo, Badge } from "./badge";
 
 export function Background() {
   const assets = [
@@ -43,6 +44,7 @@ export function Background() {
         }}
         className="relative min-h-screen w-full flex flex-col gap-4 items-center justify-center lowercase"
       >
+        <AnimatedGradientTextDemo/>
         <div className="text-4xl md:text-6xl mx-10 text-center lowercase tracking-tighter">
           Lock asset in time, Deliver to the future
         </div>
