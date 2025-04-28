@@ -43,7 +43,7 @@ export function Background() {
         }}
         className="relative min-h-screen w-full flex flex-col gap-4 items-center justify-center lowercase"
       >
-        <div className="text-4xl md:text-6xl text-center lowercase tracking-tighter">
+        <div className="text-4xl md:text-6xl mx-10 text-center lowercase tracking-tighter">
           Lock asset in time, Deliver to the future
         </div>
         <div className="font-extralight text-md mx-10 lg:text-xl text-center tracking-tighter">
@@ -65,7 +65,7 @@ export function Background() {
 
       </div>
         <div className="flex gap-3 mt-6">
-          <Button className="lowercase cursor-pointer ">
+          <Button className="lowercase cursor-pointer p-5 lg:p-6">
             Create Vault <ArrowRight className="w-[1px] h-[1px]"/>
           </Button>
           <div className="lowercase flex items-center justify-center border-2 py-[5px] px-6 rounded-lg cursor-pointer"> 
