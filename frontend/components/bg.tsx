@@ -3,10 +3,11 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { AuroraBackground } from "../components/ui/aurora-background";
-import { ArrowRight, Wallet } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { AnimatedGradientTextDemo } from "./badge";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 export function Background() {
   // const assets = [
@@ -28,7 +29,14 @@ export function Background() {
             <div
               className="border-zinc-300 text-xl font-medium flex items-center tracking-tighter text-center cursor-pointer"
             >
-              <Wallet className="mr-2 h-5 w-5" /> connect wallet
+              <WalletMultiButton   style={{
+                background: "transparent",
+                color: "#111",
+                fontSize: "20px",
+                padding: "6px 2px",
+                fontWeight: "500",
+                textTransform: "lowercase",
+              }} />
             </div>
           </div>
         </div>
