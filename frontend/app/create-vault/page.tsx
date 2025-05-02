@@ -9,8 +9,10 @@ import { useState } from "react";
 
 export default function Home() {
   const [file, setFile] = useState<File>();
-  const [_url, setUrl] = useState("");
+  const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  console.log(url);
 
   const uploadFile = async () => {
     if (!file) {
