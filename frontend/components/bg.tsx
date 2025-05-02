@@ -29,7 +29,7 @@ export function Background() {
             <div
               className="border-zinc-300 text-xl font-medium flex items-center tracking-tighter text-center cursor-pointer"
             >
-              <WalletMultiButton   style={{
+              <WalletMultiButton style={{
                 background: "transparent",
                 color: "#111",
                 fontSize: "20px",
@@ -52,33 +52,36 @@ export function Background() {
         }}
         className="relative min-h-screen w-full flex flex-col gap-4 items-center justify-center lowercase"
       >
-        <AnimatedGradientTextDemo/>
+        <AnimatedGradientTextDemo />
         <div className="text-4xl md:text-6xl mx-10 text-center lowercase tracking-tighter">
           Lock asset in time, Deliver to the future
         </div>
         <div className="font-extralight text-lg mx-10 lg:text-xl text-center tracking-tighter">
-          Timeloop Vault lets you lock any digital asset on Solana and schedule its <br/>delivery to a recipient at a future date.
+          Timeloop Vault lets you lock any digital asset on Solana and schedule its <br />delivery to a recipient at a future date.
         </div>
         {/* <div className="font-extralight text-md mx-10 lg:text-xl text-center tracking-tighter"> */}
         {/*   lock a variety of assets, including: */}
         {/* </div> */}
 
-      {/* <div className="flex flex-wrap justify-center gap-3 lg:gap-4 mt-2"> */}
-      {/*   {assets.map((asset, index) => ( */}
-      {/*   <img */}
-      {/*   key={index} */}
-      {/*   src={asset.src} */}
-      {/*   alt={asset.alt} */}
-      {/*   className="w-12 lg:w-14 lg:h-14 object-contain grayscale transition-all duration-300 ease-in-out hover:grayscale-0"  */}
-      {/* /> */}
-      {/* ))} */}
-      {/* </div> */}
+        {/* <div className="flex flex-wrap justify-center gap-3 lg:gap-4 mt-2"> */}
+        {/*   {assets.map((asset, index) => ( */}
+        {/*   <img */}
+        {/*   key={index} */}
+        {/*   src={asset.src} */}
+        {/*   alt={asset.alt} */}
+        {/*   className="w-12 lg:w-14 lg:h-14 object-contain grayscale transition-all duration-300 ease-in-out hover:grayscale-0"  */}
+        {/* /> */}
+        {/* ))} */}
+        {/* </div> */}
 
         <div className="flex gap-3 mt-4">
-          <Button className="lowercase cursor-pointer p-5 lg:p-6">
-            Create Vault <ArrowRight className="w-[1px] h-[1px]"/>
-          </Button>
-          <div className="lowercase flex items-center justify-center border-2 py-[5px] px-6 rounded-lg cursor-pointer"> 
+          <Link href="/create-vault">
+            <Button className="lowercase cursor-pointer p-5 lg:p-6">
+              Create Vault <ArrowRight className="w-[1px] h-[1px]" />
+            </Button>
+
+          </Link>
+          <div className="lowercase flex items-center justify-center border-2 py-[5px] px-6 rounded-lg cursor-pointer">
             Learn More
           </div>
         </div>
