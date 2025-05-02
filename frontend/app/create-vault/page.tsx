@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { pinata } from "@/lib/config";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
-export default function Home() {
+export default function CreatVault() {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -16,7 +17,12 @@ export default function Home() {
 
   const uploadFile = async () => {
     if (!file) {
-      alert("No file selected");
+      toast("No file selected", {
+        description: "Please select a file",
+        style: {
+          fontWeight: "500px"
+        }
+      })
       return;
     }
 
@@ -33,7 +39,7 @@ export default function Home() {
     } catch (e) {
       console.log(e);
       setUploading(false);
-      alert("Trouble uploading file");
+      alert("trouble uploading file");
     }
   };
 
@@ -42,13 +48,13 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#dee9fb] flex flex-col items-center justify-center">
+    <div className="w-full min-h-screen bg-gradient-to-r from-white to-[#a7c7f8] flex flex-col items-center justify-center">
       <Navbar />
-      <h1 className="text-2xl lg:text-5xl tracking-tighter font-extrabold mt-10 ">create vault</h1>
+      <h1 className="text-2xl md:text-5xl lg:text-5xl tracking-tighter font-extrabold mt-10 ">create vault</h1>
       <main className="p-6 md:p-10 lg:p-14 mt-6 rounded-2xl shadow-2xl w-[90%] max-w-xl flex flex-col gap-6">
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Recipient Address</label>
-          <Input type="text" placeholder="CFMyDXxFozMqDnpgefi9iuKkzxydRWbWumiDxSFwwUxz" />
+          <label className="text-sm font-medium text-gray-700">Recipient Address*</label>
+          <Input required type="text" placeholder="CFMyDXxFozMqDnpgefi9iuKkzxydRWbWumiDxSFwwUxz" />
         </div>
 
         <div className="flex flex-col gap-1">
@@ -60,17 +66,16 @@ export default function Home() {
           <label className="text-sm font-medium text-gray-700">Amount of USDC</label>
           <Input type="text" placeholder="USDC" />
         </div>
-
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Select File (image, voice, text)</label>
           <div className="flex gap-2 items-center">
-            <Input className="text-center" type="file" onChange={handleChange} />
+            <Input className="text-center lowercase" type="file" onChange={handleChange} />
             <Button variant="outline" type="button" disabled={uploading} onClick={uploadFile}>
-              {uploading ? <Loader2 className="animate-spin" /> : "Upload"}
+              {uploading ? <Loader2 className="animate-spin" /> : "upload"}
             </Button>
           </div>
         </div>
-        <Button className="mt-4 w-full">Create</Button>
+        <Button type="submit" className="mt-4 w-full">create</Button>
       </main>
     </div>
   );
