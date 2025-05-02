@@ -50,8 +50,8 @@ export default function CreatVault() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-white to-[#a7c7f8] flex flex-col items-center justify-center">
       <Navbar />
-      <h1 className="text-2xl md:text-5xl lg:text-5xl tracking-tighter font-extrabold mt-10 ">create vault</h1>
-      <main className="p-6 md:p-10 lg:p-14 mt-6 rounded-2xl shadow-2xl w-[90%] max-w-xl flex flex-col gap-6">
+      <h1 className="text-4xl md:text-5xl lg:text-5xl tracking-tighter font-extrabold mt-14 md:mt-10 lg:mt-10">create vault</h1>
+      <main className="p-6 md:p-10 lg:p-14 mt-4 md:mt-6 lg:mt-6 rounded-2xl shadow-2xl w-[90%] max-w-xl flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Recipient Address*</label>
           <Input required type="text" placeholder="CFMyDXxFozMqDnpgefi9iuKkzxydRWbWumiDxSFwwUxz" />
@@ -69,7 +69,7 @@ export default function CreatVault() {
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Select File (image, voice, text)</label>
           <div className="flex gap-2 items-center">
-            <Input className="text-center lowercase" type="file" onChange={handleChange} />
+            <Input className="text-gray-700" type="file" onChange={handleChange} />
             <Button variant="outline" type="button" disabled={uploading} onClick={uploadFile}>
               {uploading ? <Loader2 className="animate-spin" /> : "upload"}
             </Button>
