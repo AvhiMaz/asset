@@ -4,7 +4,7 @@ import Navbar from "@/components/nav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { pinata } from "@/lib/config";
-import { Loader2 } from "lucide-react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -12,6 +12,8 @@ export default function CreatVault() {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  const [isUploaded, setIsUploaded] = useState(false);
 
   console.log(url);
 
@@ -36,6 +38,7 @@ export default function CreatVault() {
       const fileUrl = await pinata.gateways.public.convert(upload.cid)
       setUrl(fileUrl);
       setUploading(false);
+      setIsUploaded(true);
     } catch (e) {
       console.log(e);
       setUploading(false);
@@ -71,7 +74,7 @@ export default function CreatVault() {
           <div className="flex gap-2 items-center">
             <Input className="text-gray-700" type="file" onChange={handleChange} />
             <Button variant="outline" type="button" disabled={uploading} onClick={uploadFile}>
-              {uploading ? <Loader2 className="animate-spin" /> : "upload"}
+              {uploading ? <Loader2 className="animate-spin" /> : isUploaded ? <CheckCircle className="text-green-500" /> : "Upload"}
             </Button>
           </div>
         </div>
