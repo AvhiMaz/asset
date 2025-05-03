@@ -2,29 +2,38 @@
 
 import Navbar from "@/components/nav";
 import { Button } from "@/components/ui/button";
+import { DateTimePicker } from "@/components/ui/date-time";
 import { Input } from "@/components/ui/input";
 import { pinata } from "@/lib/config";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import * as anchor from "@coral-xyz/anchor";
 
-export default function CreatVault() {
+const PROGRAM_ID = new PublicKey("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
+
+export default function CreateVault() {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-
   const [isUploaded, setIsUploaded] = useState(false);
+  const [recipient, setRecipient] = useState("");
+  console.log("recipient", recipient)
+  const [solAmount, setSolAmount] = useState(Number);
+  console.log("solAmount", solAmount)
+  const [unlockTimestamp, setUnlockTimestamp] = useState<number>(Date.now());
 
-  console.log(url);
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
 
   const uploadFile = async () => {
     if (!file) {
       toast("No file selected", {
         description: "Please select a file",
-        style: {
-          fontWeight: "500px"
-        }
-      })
+        style: { fontWeight: "500px" }
+      });
       return;
     }
 
@@ -32,54 +41,85 @@ export default function CreatVault() {
       setUploading(true);
       const urlRequest = await fetch("/api/url");
       const urlResponse = await urlRequest.json();
-      const upload = await pinata.upload.public
-        .file(file)
-        .url(urlResponse.url);
-      const fileUrl = await pinata.gateways.public.convert(upload.cid)
+      const upload = await pinata.upload.public.file(file).url(urlResponse.url);
+      const fileUrl = await pinata.gateways.public.convert(upload.cid);
       setUrl(fileUrl);
       setUploading(false);
       setIsUploaded(true);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       setUploading(false);
-      alert("trouble uploading file");
+      alert("Trouble uploading file");
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target?.files?.[0]);
+  const createVault = async () => {
+    if (!publicKey) {
+      toast.error("Please connect your wallet");
+      return;
+    }
+
+    try {
+      const idlRes = await fetch("/idl/contract.json");
+      const idl = await idlRes.json();
+
+      const provider = new anchor.AnchorProvider(connection, { publicKey, signTransaction, sendTransaction }, {});
+      const program = new anchor.Program(idl, PROGRAM_ID, provider);
+
+      const vaultKeypair = anchor.web3.Keypair.generate();
+
+      const tx = await program.methods
+        .createVault(new anchor.BN(unlockTimestamp), url)
+        .accounts({
+          vault: vaultKeypair.publicKey,
+          user: publicKey,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([vaultKeypair])
+        .rpc();
+
+      toast.success("Vault created successfully!");
+      console.log("Transaction signature:", tx);
+    } catch (err) {
+      console.error(err);
+      toast.error("Transaction failed");
+    }
   };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-white to-[#a7c7f8] flex flex-col items-center justify-center">
       <Navbar />
-      <h1 className="text-4xl md:text-5xl lg:text-5xl tracking-tighter font-extrabold mt-14 md:mt-10 lg:mt-10">create vault</h1>
-      <main className="p-6 md:p-10 lg:p-14 mt-4 md:mt-6 lg:mt-6 rounded-2xl shadow-2xl w-[90%] max-w-xl flex flex-col gap-6">
+      <h1 className="text-4xl font-extrabold mt-14">create vault</h1>
+      <main className="p-6 mt-4 rounded-2xl shadow-2xl w-[90%] max-w-xl flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Recipient Address*</label>
-          <Input required type="text" placeholder="CFMyDXxFozMqDnpgefi9iuKkzxydRWbWumiDxSFwwUxz" />
+          <Input required type="text" placeholder="Recipient" onChange={(e) => setRecipient(e.target.value)} />
         </div>
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Amount of SOL</label>
-          <Input type="text" placeholder="SOL" />
+          <Input type="number" placeholder="SOL" onChange={(e) => setSolAmount(e.target.value)} />
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">Amount of USDC</label>
-          <Input type="text" placeholder="USDC" />
+          <label className="text-sm font-medium text-gray-700">Unlock Time (timestamp)</label>
+          <Input type="number" value={unlockTimestamp} onChange={(e) => setUnlockTimestamp(Number(e.target.value))} />
+          <DateTimePicker />
         </div>
+
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-gray-700">Select File (image, voice, text)</label>
           <div className="flex gap-2 items-center">
-            <Input className="text-gray-700" type="file" onChange={handleChange} />
-            <Button variant="outline" type="button" disabled={uploading} onClick={uploadFile}>
+            <Input type="file" onChange={(e) => setFile(e.target?.files?.[0])} />
+            <Button variant="outline" disabled={uploading} onClick={uploadFile}>
               {uploading ? <Loader2 className="animate-spin" /> : isUploaded ? <CheckCircle className="text-green-500" /> : "Upload"}
             </Button>
           </div>
         </div>
-        <Button type="submit" className="mt-4 w-full">create</Button>
+
+        <Button className="mt-4 w-full" onClick={createVault}>create</Button>
       </main>
     </div>
   );
 }
+

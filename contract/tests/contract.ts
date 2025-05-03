@@ -53,14 +53,24 @@ describe("contract", () => {
       program.programId
     );
 
-    vaultUsdcAccount = await getAssociatedTokenAddress(tokenMint, vaultPda, true);
-    payerTokenAccount = await getAssociatedTokenAddress(tokenMint, payer.publicKey, false);
+    vaultUsdcAccount = await getAssociatedTokenAddress(
+      tokenMint,
+      vaultPda,
+      true
+    );
+    payerTokenAccount = await getAssociatedTokenAddress(
+      tokenMint,
+      payer.publicKey,
+      false
+    );
     recipientTokenAccount = await getAssociatedTokenAddress(
       tokenMint,
-      recipient.publicKey,
+      recipient.publicKey
     );
 
-    const payerAccountInfo = await provider.connection.getAccountInfo(payerTokenAccount);
+    const payerAccountInfo = await provider.connection.getAccountInfo(
+      payerTokenAccount
+    );
     if (!payerAccountInfo) {
       const createAtaIx = createAssociatedTokenAccountInstruction(
         payer.publicKey,
@@ -71,8 +81,10 @@ describe("contract", () => {
       const tx = new Transaction().add(createAtaIx);
       await provider.sendAndConfirm(tx);
     }
-    
-    const accountInfo = await provider.connection.getAccountInfo(recipientTokenAccount);
+
+    const accountInfo = await provider.connection.getAccountInfo(
+      recipientTokenAccount
+    );
     if (!accountInfo) {
       await createAssociatedTokenAccount(
         provider.connection,
@@ -87,13 +99,13 @@ describe("contract", () => {
       tokenMint,
       payerTokenAccount,
       payer,
-      1_000_000_000 
+      1_000_000_000
     );
   });
 
   it("initializes vault", async () => {
     console.log("Initializing vault...");
-    
+
     const tx = await program.methods
       .initVault(
         unlockTime,
@@ -110,11 +122,13 @@ describe("contract", () => {
       .rpc();
 
     console.log("Signature:", tx);
-    
+
     const vaultData = await program.account.vault.fetch(vaultPda);
 
     expect(vaultData.creator.toBase58()).to.equal(payer.publicKey.toBase58());
-    expect(vaultData.recipient.toBase58()).to.equal(recipient.publicKey.toBase58());
+    expect(vaultData.recipient.toBase58()).to.equal(
+      recipient.publicKey.toBase58()
+    );
     expect(vaultData.unlockTime.toNumber()).to.equal(unlockTime.toNumber());
     expect(vaultData.assetReference).to.equal(assetReference);
     expect(vaultData.isClaimed).to.be.false;
@@ -122,7 +136,7 @@ describe("contract", () => {
 
   it("Transfers USDC into vault", async () => {
     console.log("Transfering USDC from creator to vault...");
-        
+
     const tx = await program.methods
       .transfer(new anchor.BN(1_000_000_000))
       .accounts({
@@ -134,13 +148,15 @@ describe("contract", () => {
       .rpc();
 
     console.log("Signature:", tx);
-    const afterBalance = await provider.connection.getTokenAccountBalance(vaultUsdcAccount);
+    const afterBalance = await provider.connection.getTokenAccountBalance(
+      vaultUsdcAccount
+    );
     expect(Number(afterBalance.value.amount)).to.equal(1_000_000_000);
   });
 
   it("Claim", async () => {
     console.log("Claim the asset...");
-     
+
     const tx = await program.methods
       .claim()
       .accounts({
@@ -153,11 +169,14 @@ describe("contract", () => {
       .rpc();
 
     console.log("Signature:", tx);
-    const vaultBalance = await provider.connection.getTokenAccountBalance(vaultUsdcAccount);
-    const recipientBalance = await provider.connection.getTokenAccountBalance(recipientTokenAccount);
+    const vaultBalance = await provider.connection.getTokenAccountBalance(
+      vaultUsdcAccount
+    );
+    const recipientBalance = await provider.connection.getTokenAccountBalance(
+      recipientTokenAccount
+    );
 
     expect(Number(vaultBalance.value.amount)).to.equal(0);
     expect(Number(recipientBalance.value.amount)).to.equal(1_000_000_000);
   });
 });
-
