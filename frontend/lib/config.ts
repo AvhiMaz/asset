@@ -18,3 +18,4 @@ export const program = new Program(idl as Idl, {
   connection,
 });
 
+export const PROGRAM_ID = new PublicKey("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY")

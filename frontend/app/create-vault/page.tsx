@@ -9,10 +9,9 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
-
-// const PROGRAM_ID = new PublicKey("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
+import { useProgram } from "@/lib/solana/hooks/use-program";
 
 export default function CreateVault() {
   const [file, setFile] = useState<File>();
@@ -25,9 +24,8 @@ export default function CreateVault() {
   console.log("solAmount", solAmount)
   const [unlockTimestamp, setUnlockTimestamp] = useState<number>(Date.now());
 
-  const { connection } = useConnection();
   const wallet = useAnchorWallet();
-
+  const { program, provider } = useProgram();
 
   const uploadFile = async () => {
     if (!file) {
@@ -55,23 +53,17 @@ export default function CreateVault() {
   };
 
   const createVault = async () => {
+
+    if (!program || !provider) {
+      toast.error("Please connect your wallet");
+      return;
+    }
     if (!wallet) {
       toast.error("Please connect your wallet");
       return;
     }
 
     try {
-
-      const idlRes = await fetch("/idl/contract.json");
-      const idl = await idlRes.json();
-      console.log("idl", idl)
-
-      const provider = new anchor.AnchorProvider(connection, wallet, {});
-      console.log("provider", provider)
-      console.log("working");
-      const program = new anchor.Program(idl as anchor.Idl, {
-        connection,
-      });
 
       const unlockTime = new anchor.BN(Math.floor(Date.now() / 1000) - 60);
 
@@ -95,7 +87,7 @@ export default function CreateVault() {
       )
         .accounts({
           vault: vaultKeypair.publicKey,
-          user: wallet,
+          user: wallet.publicKey,
           systemProgram: SystemProgram.programId,
         })
         .signers([])
