@@ -9,10 +9,10 @@ import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
 
-const PROGRAM_ID = new PublicKey("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
+// const PROGRAM_ID = new PublicKey("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
 
 export default function CreateVault() {
   const [file, setFile] = useState<File>();
@@ -21,12 +21,13 @@ export default function CreateVault() {
   const [isUploaded, setIsUploaded] = useState(false);
   const [recipient, setRecipient] = useState("");
   console.log("recipient", recipient)
-  const [solAmount, setSolAmount] = useState(Number);
+  const [solAmount, setSolAmount] = useState("");
   console.log("solAmount", solAmount)
   const [unlockTimestamp, setUnlockTimestamp] = useState<number>(Date.now());
 
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const wallet = useAnchorWallet();
+
 
   const uploadFile = async () => {
     if (!file) {
@@ -54,28 +55,50 @@ export default function CreateVault() {
   };
 
   const createVault = async () => {
-    if (!publicKey) {
+    if (!wallet) {
       toast.error("Please connect your wallet");
       return;
     }
 
     try {
+
       const idlRes = await fetch("/idl/contract.json");
       const idl = await idlRes.json();
+      console.log("idl", idl)
 
-      const provider = new anchor.AnchorProvider(connection, { publicKey, signTransaction, sendTransaction }, {});
-      const program = new anchor.Program(idl, PROGRAM_ID, provider);
+      const provider = new anchor.AnchorProvider(connection, wallet, {});
+      console.log("provider", provider)
+      console.log("working");
+      const program = new anchor.Program(idl as anchor.Idl, {
+        connection,
+      });
+
+      const unlockTime = new anchor.BN(Math.floor(Date.now() / 1000) - 60);
 
       const vaultKeypair = anchor.web3.Keypair.generate();
+      const [vaultBump] = PublicKey.findProgramAddressSync(
+        [
+          Buffer.from("vault"),
+          wallet.publicKey.toBuffer(),
+          unlockTime.toArrayLike(Buffer, "le", 8),
+        ],
+        program.programId
+      );
 
-      const tx = await program.methods
-        .createVault(new anchor.BN(unlockTimestamp), url)
+      const assetType = { sol: {} };
+      const tx = await program.methods.initVault(
+        new anchor.BN(unlockTime),
+        vaultBump,
+        assetType,
+        recipient,
+        url
+      )
         .accounts({
           vault: vaultKeypair.publicKey,
-          user: publicKey,
+          user: wallet,
           systemProgram: SystemProgram.programId,
         })
-        .signers([vaultKeypair])
+        .signers([])
         .rpc();
 
       toast.success("Vault created successfully!");
