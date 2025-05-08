@@ -14,7 +14,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CalendarIcon } from "lucide-react";
 
-export function DateTimePicker() {
+export function DateTimePicker({ onChange }: { onChange: (timestamp: number) => void }) {
   const [date, setDate] = React.useState<Date>();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -22,6 +22,9 @@ export function DateTimePicker() {
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
       setDate(selectedDate);
+      const unix = Math.floor(selectedDate.getTime() / 1000);
+      console.log(unix);
+      onChange(unix)
     }
   };
 
@@ -44,6 +47,9 @@ export function DateTimePicker() {
         );
       }
       setDate(newDate);
+      const unix = Math.floor(newDate.getTime() / 1000);
+      console.log(unix);
+      onChange(unix)
     }
   };
 

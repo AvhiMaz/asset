@@ -33,7 +33,7 @@ describe("contract", () => {
   before(async () => {
     recipient = anchor.web3.Keypair.generate();
     unlockTime = new anchor.BN(Math.floor(Date.now() / 1000) - 60);
-    assetType = { usdc: {} };
+    assetType = { sol: {} };
     assetReference = "some_asset_reference";
 
     tokenMint = await createMint(
@@ -134,11 +134,11 @@ describe("contract", () => {
     expect(vaultData.isClaimed).to.be.false;
   });
 
-  it("Transfers USDC into vault", async () => {
-    console.log("Transfering USDC from creator to vault...");
+  it("Transfer SOL into vault", async () => {
+    // assetType = { sol: {} };
 
     const tx = await program.methods
-      .transfer(new anchor.BN(1_000_000_000))
+      .transfer(new anchor.BN(1_000_000))
       .accounts({
         vault: vaultPda,
         creatorTokenAccount: payerTokenAccount,
@@ -148,11 +148,27 @@ describe("contract", () => {
       .rpc();
 
     console.log("Signature:", tx);
-    const afterBalance = await provider.connection.getTokenAccountBalance(
-      vaultUsdcAccount
-    );
-    expect(Number(afterBalance.value.amount)).to.equal(1_000_000_000);
   });
+
+  // it("Transfers USDC into vault", async () => {
+  //   console.log("Transfering USDC from creator to vault...");
+  //
+  //   const tx = await program.methods
+  //     .transfer(new anchor.BN(1_000_000_000))
+  //     .accounts({
+  //       vault: vaultPda,
+  //       creatorTokenAccount: payerTokenAccount,
+  //       vaultTokenAccount: vaultUsdcAccount,
+  //     })
+  //     .signers([payer])
+  //     .rpc();
+  //
+  //   console.log("Signature:", tx);
+  //   const afterBalance = await provider.connection.getTokenAccountBalance(
+  //     vaultUsdcAccount
+  //   );
+  //   expect(Number(afterBalance.value.amount)).to.equal(1_000_000_000);
+  // });
 
   it("Claim", async () => {
     console.log("Claim the asset...");

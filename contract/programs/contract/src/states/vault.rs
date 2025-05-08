@@ -4,9 +4,7 @@ use anchor_lang::prelude::*;
 pub enum AssetType {
     Sol,
     Usdc,
-    Image,
-    Voice,
-    Text,
+    File,
 }
 
 impl Space for AssetType {
