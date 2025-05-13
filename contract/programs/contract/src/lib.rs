@@ -5,6 +5,8 @@ pub mod errors;
 pub mod instructions;
 pub mod states;
 
+use instructions::sol::*;
+
 use instructions::claim::*;
 use instructions::init_vault::*;
 use instructions::transfer::*;
@@ -16,6 +18,18 @@ declare_id!("J1Zk92BRXxaAv3obJkEVSx2qjpHRVM2cziTG1e1zDfzY");
 pub mod contract {
 
     use super::*;
+
+    pub fn init_sol_vault(
+        ctx: Context<InitSolVault>,
+        recipient: Pubkey,
+        unlock_time: i64,
+        memo: String,
+        amount: u64,
+    ) -> Result<()> {
+        ctx.accounts
+            .init_sol_vault(recipient, unlock_time, amount, memo)?;
+        Ok(())
+    }
 
     pub fn init_vault(
         ctx: Context<InitVault>,
